@@ -21,4 +21,4 @@ export PATH
 to your .bash_profile or .profile file, often in ~
 
 # use
-after instal run tinyapio --help for avaibale commands
+after install, run `tinyapio --help` for avaibale commands.
