@@ -1,0 +1,84 @@
+#!/bin/sh
+#MIT license
+#Copyright 2019 Jonah Yolles-Murphy
+
+#Permission is hereby granted, free of charge, to any person obtaining a copy of
+#this software and associated documentation files (the "Software"), to deal in
+#the Software without restriction, including without limitation the rights to
+#use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+#the Software, and to permit persons to whom the Software is furnished to do so,
+#subject to the following conditions:
+
+#The above copyright notice and this permission notice shall be included in all
+#copies or substantial portions of the Software.
+
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+#FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+#COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+#IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+#CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#make sure to: chmod +x /Users/YOU/LOCATION/OF/FILE/tinyapio_tool.sh.command
+#the thing to do:
+directive=$1
+
+#help status
+if [ $directive == 'help' -o $directive == 'h'  -o $directive == '--help'  -o $directive == '-h' ]
+then
+  echo "tinyapio:
+A small tool to perform basic task while dealing with APIO and a TinyFPGA board (only teseted for bx).
+
+help: help, h, -h ,--help
+  duh? prints what you are reading now.
+
+build <dir>: build, b
+  Builds the project at <dir> into <dir>/_build. <dir> defaults to the current directory
+
+deploy <dir> <programmer type>:  deplay, d
+  builds then uploads the build to the specified board type. defaults to 'tp'.
+  supported programmers: tinyprog"
+
+
+
+elif [ $directive == 'build' -o $directive == 'b' ]
+then
+  sourcedir=$2
+  if [ -z $sourcedir ]
+  then
+    sourcedir=$(pwd)
+  fi
+
+  cd $sourcedir
+
+  rm hardware.*
+  rm _build/hardware.*
+
+  echo building: $sourcedir
+  apio build
+
+  mkdir _build
+  mv hardware.* ./_build
+elif [ $directive == 'deploy' -o $directive == 'd' ]
+then
+  sourcedir=$2
+  sourcedir=$2
+  if [ -z $sourcedir ]
+  then
+    echo building: $sourcedir=$(pwd)
+  fi
+  mv $sourcedir
+
+  progrtype=$3
+  if [ -z $progrtype ]
+  then
+    progrtype= 'tp'
+  fi
+  tinyapio build $sourcedir
+
+  echo deploying from $sourcedir/_build with $progrtype...
+  if [ $progrtype == 'tp' -o $progrtype == 'tinyprog'  ]
+  then
+    tinyprog -p $sourcedir/_build/hardware.bin
+  fi
+fi
