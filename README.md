@@ -11,10 +11,12 @@ apio drivers --serial-enable;
 
 clone this repo into /usr/local
 
-then add:```
+then add:
+```
 #set path for tinyapio
 PATH="$PATH:/usr/local/tinyapio/bin"
-export PATH```
+export PATH
+```
 
 to your .bash_profile or .profile file, often in ~
 
